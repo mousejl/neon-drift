@@ -124,21 +124,25 @@ button{font-family:inherit;cursor:pointer}
 
 /* ---------- 触屏按钮：左右分区 + 每组两列网格，窄屏不会互相压叠 ---------- */
 #touch{position:absolute;inset:0;z-index:35;pointer-events:none;display:none;
-  --tb:clamp(46px,14vw,64px);        /* 普通键边长，随屏宽缩放 */
-  --tg:clamp(58px,17vw,82px);        /* GAS 大圆直径 */
+  --tb:clamp(58px,18vw,78px);       /* 驾驶键边长 */
+  --tg:clamp(80px,23vw,104px);      /* GAS 大圆直径 */
+  --tmini:32px;                     /* 功能键行高 */
   --tgap:8px;
-  --tdock:calc(92px + env(safe-area-inset-bottom, 0px));
+  --tpad:calc(8px + env(safe-area-inset-bottom, 0px)); /* 贴底距离 */
 }
 #cabinet.touch-on #touch{display:block}
 .touch-left,.touch-right,.touch-mini{position:absolute;pointer-events:none}
 .touch-left,.touch-right{
   display:grid;grid-template-columns:repeat(2,var(--tb));gap:var(--tgap);
-  align-items:center;justify-items:center;bottom:var(--tdock);
+  align-items:center;justify-items:center;
 }
-.touch-left{left:calc(12px + env(safe-area-inset-left, 0px))}
-.touch-right{right:calc(12px + env(safe-area-inset-right, 0px))}
-.touch-mini{left:50%;transform:translateX(-50%);top:auto;display:flex;gap:8px;
-  bottom:calc(var(--tdock) + var(--tb) + var(--tgap) + var(--tg) + 14px)}
+/* 左侧：转向 + DRIFT，下方一行是 AUTO/II/?；右侧：BRAKE/N2O + GAS 一直贴到屏幕底 */
+.touch-left{left:calc(12px + env(safe-area-inset-left, 0px));
+  bottom:calc(var(--tpad) + var(--tmini) + 10px)}
+.touch-right{right:calc(12px + env(safe-area-inset-right, 0px));bottom:var(--tpad)}
+.touch-mini{top:auto;transform:none;left:calc(12px + env(safe-area-inset-left, 0px));
+  bottom:var(--tpad);display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  width:calc(var(--tb)*2 + var(--tgap))}
 .tbtn{
   pointer-events:auto;touch-action:none;color:#fff;font-weight:bold;font-size:13px;letter-spacing:.08em;
   border:2px solid rgba(40,231,255,.7);border-radius:12px;
@@ -152,19 +156,19 @@ button{font-family:inherit;cursor:pointer}
 .tbtn.held,.tbtn:active{transform:scale(.93);background:rgba(255,45,149,.42);
   box-shadow:0 0 22px var(--mag),inset 0 0 16px rgba(255,45,149,.5)}
 /* 触屏实际尺寸：统一按 --tb 走，跨列键例外 */
-.touch-left .tbtn,.touch-right .tbtn{width:var(--tb);height:var(--tb);font-size:12px}
-.touch-left .tbtn-sm{font-size:20px}
-.touch-left .tbtn-drift{grid-column:1/-1;width:100%;height:calc(var(--tb)*.78);
+.touch-left .tbtn,.touch-right .tbtn{width:var(--tb);height:var(--tb);font-size:13px}
+.touch-left .tbtn-sm{font-size:24px}
+.touch-left .tbtn-drift{grid-column:1/-1;width:100%;height:calc(var(--tb)*.7);
   font-size:11px;border-radius:10px;border-color:rgba(255,45,149,.8);
   box-shadow:0 0 14px rgba(255,45,149,.35),inset 0 0 12px rgba(255,45,149,.14);
   text-shadow:0 0 8px var(--mag)}
 .touch-right .tbtn-nitro{border-radius:50%;font-size:15px;color:#c9fbff}
 .touch-right .tbtn-brake{font-size:10px;border-color:rgba(255,255,255,.6)}
 .touch-right .tbtn-gas{grid-column:1/-1;width:var(--tg);height:var(--tg);
-  border-radius:50%;font-size:14px;border-color:rgba(255,209,102,.85);
+  border-radius:50%;font-size:16px;border-color:rgba(255,209,102,.85);
   box-shadow:0 0 18px rgba(255,209,102,.38),inset 0 0 14px rgba(255,209,102,.16);
   text-shadow:0 0 8px #ffd166}
-.tbtn-mini{width:48px;height:32px;font-size:10px;border-radius:7px;letter-spacing:.04em}
+.tbtn-mini{width:100%;height:var(--tmini);font-size:10px;border-radius:7px;letter-spacing:.04em}
 sub{font-size:.6em}
 
 /* ---------- 覆盖面板 ---------- */
@@ -252,8 +256,11 @@ sub{font-size:.6em}
   .start-foot{display:none}
   .combo-toast{font-size:24px}
 }
-/* 触屏 / 窄屏 / 矮屏：压缩底部 HUD，给虚拟按键让出空间 */
+/* 触屏 / 窄屏 / 矮屏：氮气条与速度表整体上移到顶部，屏幕底部整块留给驾驶按键 */
 @media (pointer:coarse), (max-width:760px), (max-height:480px){
+  #hud{padding:calc(8px + env(safe-area-inset-top, 0px))
+             calc(10px + env(safe-area-inset-right, 0px)) 8px
+             calc(10px + env(safe-area-inset-left, 0px))}
   .hud-keys,.nitro-hint{display:none}
   .speed-num{font-size:38px}
   .speed-unit{font-size:10px;margin-top:0}
@@ -261,10 +268,25 @@ sub{font-size:.6em}
   .speed-wrap{min-width:110px}
   .nitro-track{height:12px}
   .nitro-head{font-size:9px;margin-bottom:3px}
-  .hud-bottom{bottom:calc(6px + env(safe-area-inset-bottom, 0px))}
+  .hud-bottom{top:calc(80px + env(safe-area-inset-top, 0px));bottom:auto;
+    left:calc(10px + env(safe-area-inset-left, 0px));
+    right:calc(10px + env(safe-area-inset-right, 0px));align-items:center}
+  /* 仪表各自带暗底，压在城市亮窗上也读得清 */
+  .nitro-wrap,.speed-wrap{padding:4px 8px 5px;
+    background:linear-gradient(160deg,rgba(20,4,48,.66),rgba(7,2,26,.58));
+    border:1px solid rgba(40,231,255,.22);
+    box-shadow:0 0 12px rgba(40,231,255,.1)}
 }
-/* 手机横屏：按键整体缩小，避免与顶部 HUD / 速度表抢占高度 */
+/* 手机横屏：HUD 顶块更高，第二行下移；按键按比例缩小 */
 @media (max-height:480px) and (orientation:landscape){
-  #touch{--tb:48px;--tg:60px;--tgap:6px;--tdock:calc(80px + env(safe-area-inset-bottom, 0px))}
-  .tbtn-mini{width:44px;height:30px}
+  #touch{--tb:56px;--tg:70px;--tmini:28px;--tgap:6px;
+    --tpad:calc(6px + env(safe-area-inset-bottom, 0px))}
+  .tbtn-mini{font-size:9px}
+  .hud-bottom{top:calc(116px + env(safe-area-inset-top, 0px))}
+  .speed-num{font-size:30px}
+  .speed-unit{font-size:9px}
+  .nitro-wrap{width:min(36vw,220px)}
+}
+@media (max-height:480px) and (orientation:landscape) and (max-width:720px){
+  .hud-bottom{top:calc(82px + env(safe-area-inset-top, 0px))}
 }
