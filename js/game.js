@@ -20,7 +20,8 @@
   function cacheDom() {
     ['cabinet', 'screen', 'hud-lap', 'hud-best', 'hud-dist', 'hud-phase', 'phase-fill',
       'hud-score', 'hud-combo', 'hud-auto', 'hud-nitro-num', 'nitro-fill', 'hud-speed',
-      'speed-fill', 'combo-toast', 'pickup-toast', 'touch', 'overlay-start', 'btn-start',
+      'speed-fill', 'combo-toast', 'pickup-toast', 'touch', 'steer-pad', 'steer-knob',
+      'overlay-start', 'btn-start',
       'overlay-pause', 'btn-resume', 'btn-restart-p', 'overlay-help', 'btn-help-close'
     ].forEach(function (id) { D[id] = $(id); });
   }
@@ -76,6 +77,8 @@
 
   var input = { gas: false, brake: false, left: false, right: false, drift: false, nitro: false };
   var held = { gas: false, brake: false, left: false, right: false, drift: false, nitro: false };
+  // 触屏滑动转向：target 为手指位移映射出的 -1..1，value 为平滑后的实际舵量
+  var swipe = { active: false, id: null, startX: 0, target: 0, value: 0 };
 
   /* ---------------- 赛道（周期函数保证首尾无缝） ---------------- */
   function hillAt(i) {
@@ -149,6 +152,7 @@
 
   /* ---------------- 重置 ---------------- */
   function resetGame() {
+    resetSwipe();
     G.position = debug.pos * TRACK;
     G.totalDistance = G.position;
     G.playerX = 0; G.speed = 0; G.speedRatio = 0;
@@ -176,15 +180,30 @@
   }
 
   /* ---------------- 输入 ---------------- */
+  function setKnob(v) {
+    if (D['steer-knob']) D['steer-knob'].style.left = (50 + clamp(v, -1, 1) * 38) + '%';
+  }
+  function resetSwipe() {
+    swipe.active = false; swipe.id = null; swipe.target = 0; swipe.value = 0;
+    if (D['steer-pad']) D['steer-pad'].classList.remove('active');
+    setKnob(0);
+  }
   function computeInput(dt) {
+    // 连续舵量：跟随手指平滑变化，松手后自动回中
+    swipe.value += (swipe.target - swipe.value) * Math.min(1, dt * 14);
+    if (!swipe.active && Math.abs(swipe.value) < .004) swipe.value = 0;
+    setKnob(swipe.value);
+
+    var keySteer = (held.right ? 1 : 0) - (held.left ? 1 : 0);
     var inp = {
       gas: held.gas, brake: held.brake,
-      steer: (held.right ? 1 : 0) - (held.left ? 1 : 0),
+      steer: (swipe.active || Math.abs(swipe.value) > 0) ? swipe.value : keySteer,
       drift: held.drift, nitro: held.nitro
     };
     if (G.auto) {
       inp.gas = true; inp.brake = false;
       inp.steer = autoSteer();
+      setKnob(inp.steer);
       var a = Math.abs(inp.steer);
       inp.drift = a > .42 && a < .85 && G.speed > MAXSPEED * .35 && G.nitro < 70;
       inp.nitro = G.nitro > 82;
@@ -305,6 +324,48 @@
       btn.addEventListener('pointerleave', up);
       btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     });
+    bindSteerSwipe();
+  }
+
+  /* 手指按住左右拖动转向：滑动条上可拖，触屏下屏幕左半区空白处也能直接滑 */
+  function bindSteerSwipe() {
+    var pad = D['steer-pad'];
+    if (!pad) return;
+    var coarse = D.cabinet.classList.contains('touch-on');
+
+    function blocked(t) {
+      return !!(t && t.closest && t.closest('[data-key], .panel-screen, .neon-btn'));
+    }
+    function down(e) {
+      if (swipe.active) return;
+      var onPad = pad.contains(e.target);
+      var freeZone = coarse && e.clientX < global.innerWidth * .58 && !blocked(e.target);
+      if (!onPad && !freeZone) return;
+      if (blocked(e.target)) return;
+      swipe.active = true;
+      swipe.id = e.pointerId;
+      swipe.startX = e.clientX;
+      swipe.target = 0;                 // 按下瞬间不转向，避免误触
+      pad.classList.add('active');
+      if (e.cancelable) e.preventDefault();
+    }
+    function move(e) {
+      if (!swipe.active || e.pointerId !== swipe.id) return;
+      var span = Math.max(56, global.innerWidth * .16);   // 滑动约 1/6 屏宽即满舵
+      swipe.target = clamp((e.clientX - swipe.startX) / span, -1, 1);
+      if (e.cancelable) e.preventDefault();
+    }
+    function up(e) {
+      if (!swipe.active) return;
+      if (e && e.pointerId !== undefined && e.pointerId !== swipe.id) return;
+      swipe.active = false; swipe.id = null; swipe.target = 0;
+      pad.classList.remove('active');
+    }
+    global.addEventListener('pointerdown', down, { passive: false });
+    global.addEventListener('pointermove', move, { passive: false });
+    global.addEventListener('pointerup', up);
+    global.addEventListener('pointercancel', up);
+    global.addEventListener('blur', up);
   }
 
   /* ---------------- 状态切换 ---------------- */
@@ -326,6 +387,7 @@
   function togglePause() {
     if (!G.started || G.helpOpen) return;
     G.paused = !G.paused;
+    if (G.paused) resetSwipe();      // 暂停时释放转向，避免恢复后仍在打舵
     D['overlay-pause'].classList.toggle('hidden', !G.paused);
     global.AUDIO.setPaused(G.paused);
     global.AUDIO.sfx('ui');
@@ -599,5 +661,5 @@
   else boot();
 
   // 供调试 / 自动化验证使用
-  global.NEON = { G: G, debug: debug, start: startGame, reset: resetGame, CFG: CFG };
+  global.NEON = { G: G, debug: debug, start: startGame, reset: resetGame, CFG: CFG, swipe: swipe };
 })(window);

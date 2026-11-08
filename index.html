@@ -59,8 +59,16 @@
   <!-- ===================== 触屏虚拟按钮 ===================== -->
   <div id="touch" aria-label="触屏操作">
     <div class="touch-left">
-      <button class="tbtn tbtn-sm" data-key="left" aria-label="左转">◀</button>
-      <button class="tbtn tbtn-sm" data-key="right" aria-label="右转">▶</button>
+      <!-- 连续转向：按住左右拖动，松手自动回中 -->
+      <div id="steer-pad" class="steer-pad" aria-label="左右滑动转向">
+        <span class="steer-end">◀</span>
+        <div class="steer-track">
+          <span class="steer-center"></span>
+          <span id="steer-knob" class="steer-knob"></span>
+        </div>
+        <span class="steer-end">▶</span>
+        <span class="steer-hint">SWIPE / 左右滑动</span>
+      </div>
       <button class="tbtn tbtn-drift" data-key="drift">DRIFT</button>
     </div>
     <div class="touch-mini">
@@ -120,6 +128,13 @@
           <div class="help-row"><b>R</b><span>重新开始</span></div>
           <div class="help-row"><b>H</b><span>隐藏 / 显示 HUD</span></div>
           <div class="help-row"><b>?</b><span>本帮助面板</span></div>
+          <h3 style="margin-top:14px">触屏 / TOUCH</h3>
+          <div class="help-row"><b>左右滑动</b><span>按住拖动转向，松手回正</span></div>
+          <div class="help-row"><b>DRIFT</b><span>配合滑动漂移攒氮气</span></div>
+          <div class="help-row"><b>GAS / BRAKE</b><span>油门 / 刹车</span></div>
+          <div class="help-row"><b>N<sub>2</sub>O</b><span>氮气爆发</span></div>
+          <div class="help-row"><b>AUTO / II / ?</b><span>巡航 / 暂停 / 帮助</span></div>
+          <p class="help-p dim">滑动条上、或屏幕左半区空白处均可按住左右滑动；滑得越远，转向越大。</p>
         </div>
         <div>
           <h3>玩法 / RACE</h3>
