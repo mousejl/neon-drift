@@ -382,7 +382,7 @@
     D['overlay-pause'].classList.add('hidden');
     D['overlay-help'].classList.add('hidden');
     global.AUDIO.sfx('ui');
-    toast(D['combo-toast'], 'RESTART');
+    toast(D['combo-toast'], '重新开始');
   }
   function togglePause() {
     if (!G.started || G.helpOpen) return;
@@ -406,7 +406,7 @@
   function toggleAuto() {
     G.auto = !G.auto;
     global.AUDIO.sfx('ui');
-    toast(D['pickup-toast'], G.auto ? 'AUTO CRUISE ON' : 'AUTO CRUISE OFF');
+    toast(D['pickup-toast'], G.auto ? '自动巡航 已开启' : '自动巡航 已关闭');
     updateHUD(true);
   }
 
@@ -423,7 +423,7 @@
     G.comboTimer = 2.7;
     var gain = Math.round((120 + G.speedRatio * 180) * G.combo);
     G.score += gain;
-    toast(D['combo-toast'], 'OVERTAKE  x' + G.combo + '   +' + gain);
+    toast(D['combo-toast'], '超车连击  ×' + G.combo + '   +' + gain);
     global.AUDIO.sfx('combo', G.combo);
     emit(7, 'rgba(255,209,102,ALPHA)', .5, .84, .22, true);
   }
@@ -445,7 +445,7 @@
         G.combo = 1; G.comboTimer = 0;
         G.playerX += (G.playerX >= c.offset ? .18 : -.18);
         c.rel = 1500;
-        toast(D['combo-toast'], 'CRASH!  -SPEED');
+        toast(D['combo-toast'], '碰撞！减速');
         global.AUDIO.sfx('crash');
         emit(18, 'rgba(255,45,149,ALPHA)', .5, .87, .3, true);
       }
@@ -469,7 +469,7 @@
       if (!G.demo && Math.abs(n.rel) < 620 && Math.abs(n.offset - G.playerX) < .44) {
         G.nitro = Math.min(100, G.nitro + 28);
         G.score += 150;
-        toast(D['pickup-toast'], '♪  NITRO +28   +150');
+        toast(D['pickup-toast'], '♪ 氮气 +28   得分 +150');
         global.AUDIO.sfx('pickup');
         emit(14, 'rgba(40,231,255,ALPHA)', .5, .80, .25, true);
         spawnNote(n, rand(15000, CFG.drawDistance * L * .78));
@@ -554,7 +554,7 @@
     if (pseg.boost && !G.onBoost && G.speed > 900 && !demo) {
       G.speed = Math.min(MAXSPEED * 1.46, G.speed + 2100);
       G.score += 80;
-      toast(D['pickup-toast'], '» BOOST PAD  +80');
+      toast(D['pickup-toast'], '» 加速带 +80');
       global.AUDIO.sfx('boost');
       emit(12, 'rgba(40,231,255,ALPHA)', .5, .88, .3, true);
     }
@@ -575,9 +575,9 @@
       G.lapStartTime = G.raceTime;
       if (lapTime > 1 && (G.bestLap === null || lapTime < G.bestLap)) {
         G.bestLap = lapTime; saveBest(lapTime);
-        toast(D['combo-toast'], '★ NEW BEST LAP  ' + formatTime(lapTime));
+        toast(D['combo-toast'], '★ 新最佳圈速  ' + formatTime(lapTime));
       } else {
-        toast(D['combo-toast'], 'LAP ' + pad(G.lap, 2) + '  ' + formatTime(lapTime));
+        toast(D['combo-toast'], '第 ' + pad(G.lap, 2) + ' 圈  ' + formatTime(lapTime));
       }
       G.lap++;
       G.score += 1000;
@@ -595,16 +595,16 @@
     D['speed-fill'].style.width = clamp(G.speedRatio * 100, 0, 100) + '%';
     D['hud-lap'].textContent = pad(G.lap, 2);
     D['hud-best'].textContent = formatTime(G.bestLap);
-    D['hud-dist'].textContent = (G.totalDistance * DIST_SCALE).toFixed(2) + ' KM';
+    D['hud-dist'].textContent = (G.totalDistance * DIST_SCALE).toFixed(2) + ' 公里';
     D['hud-score'].textContent = pad(G.score, 7);
-    D['hud-combo'].textContent = 'x' + G.combo;
-    D['hud-auto'].textContent = G.auto ? 'ON' : 'OFF';
+    D['hud-combo'].textContent = '×' + G.combo;
+    D['hud-auto'].textContent = G.auto ? '开' : '关';
     D['hud-auto'].classList.toggle('on', G.auto);
     D['hud-nitro-num'].textContent = Math.round(G.nitro) + '%';
     D['nitro-fill'].style.width = G.nitro + '%';
     D['nitro-fill'].classList.toggle('full', G.nitro >= 99);
     D['phase-fill'].style.width = ((1 - G.dayFactor) * 100).toFixed(1) + '%';
-    var label = G.dayFactor > .62 ? 'DAY / 日' : (G.dayFactor > .30 ? 'DUSK / 黄昏' : 'NIGHT / 夜');
+    var label = G.dayFactor > .62 ? '白昼' : (G.dayFactor > .30 ? '黄昏' : '深夜');
     D['hud-phase'].textContent = label;
     if (force) hudAcc = 0;
   }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>NEON DRIFT // OUTRUN 1986</title>
+<title>霓虹漂移 // 狂飙 1986</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23100624'/%3E%3Ccircle cx='32' cy='29' r='18' fill='%23ff2d95'/%3E%3Cpath d='M14 32h36M14 38h36M14 44h36' stroke='%23100624' stroke-width='3'/%3E%3Cpath d='M0 50h64M0 58h64' stroke='%2328e7ff' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -15,45 +15,45 @@
   <!-- CRT 扫描线 / 暗角 / 噪点 -->
   <div id="crt" aria-hidden="true"><div id="crt-beam"></div></div>
 
-  <!-- ===================== HUD ===================== -->
+  <!-- ===================== 仪表 ===================== -->
   <div id="hud">
     <div class="hud-top">
       <div class="hud-block hud-left">
-        <div class="hud-row"><span class="lbl">LAP</span><span class="val" id="hud-lap">01</span></div>
-        <div class="hud-row"><span class="lbl">BEST LAP</span><span class="val" id="hud-best">--:--.--</span></div>
-        <div class="hud-row"><span class="lbl">DIST</span><span class="val" id="hud-dist">0.00 KM</span></div>
+        <div class="hud-row"><span class="lbl">圈数</span><span class="val" id="hud-lap">01</span></div>
+        <div class="hud-row"><span class="lbl">最佳圈速</span><span class="val" id="hud-best">--:--.--</span></div>
+        <div class="hud-row"><span class="lbl">里程</span><span class="val" id="hud-dist">0.00 公里</span></div>
       </div>
 
       <div class="hud-block hud-mid">
-        <div id="hud-phase" class="phase-tag">SUNSET / 日落</div>
+        <div id="hud-phase" class="phase-tag">日落</div>
         <div class="phase-track"><div id="phase-fill"></div></div>
-        <div class="phase-ends"><span>DAY 日</span><span>NIGHT 夜</span></div>
+        <div class="phase-ends"><span>白昼</span><span>深夜</span></div>
       </div>
 
       <div class="hud-block hud-right">
-        <div class="hud-row"><span class="lbl">SCORE</span><span class="val" id="hud-score">0000000</span></div>
-        <div class="hud-row"><span class="lbl">COMBO</span><span class="val" id="hud-combo">x1</span></div>
-        <div class="hud-row"><span class="lbl">AUTO</span><span class="val" id="hud-auto">OFF</span></div>
+        <div class="hud-row"><span class="lbl">得分</span><span class="val" id="hud-score">0000000</span></div>
+        <div class="hud-row"><span class="lbl">连击</span><span class="val" id="hud-combo">×1</span></div>
+        <div class="hud-row"><span class="lbl">巡航</span><span class="val" id="hud-auto">关</span></div>
       </div>
     </div>
 
     <div class="hud-bottom">
       <div class="nitro-wrap">
-        <div class="nitro-head"><span>NITRO / 氮气</span><span id="hud-nitro-num">0%</span></div>
+        <div class="nitro-head"><span>氮气</span><span id="hud-nitro-num">0%</span></div>
         <div class="nitro-track"><div id="nitro-fill"></div><div class="nitro-ticks"></div></div>
-        <div class="nitro-hint">DRIFT 漂移积攒 · SPACE 爆发</div>
+        <div class="nitro-hint">漂移积攒 · 空格爆发</div>
       </div>
 
       <div class="speed-wrap">
         <div class="speed-num" id="hud-speed">000</div>
-        <div class="speed-unit">KM/H</div>
+        <div class="speed-unit">公里/时</div>
         <div class="speed-bar"><div id="speed-fill"></div></div>
       </div>
     </div>
 
     <div id="combo-toast" class="combo-toast"></div>
     <div id="pickup-toast" class="pickup-toast"></div>
-    <div class="hud-keys">H 隐藏HUD &nbsp;·&nbsp; ? 帮助 &nbsp;·&nbsp; P 暂停 &nbsp;·&nbsp; R 重开</div>
+    <div class="hud-keys">H 隐藏仪表 &nbsp;·&nbsp; ? 帮助 &nbsp;·&nbsp; P 暂停 &nbsp;·&nbsp; R 重开</div>
   </div>
 
   <!-- ===================== 触屏虚拟按钮 ===================== -->
@@ -67,88 +67,88 @@
           <span id="steer-knob" class="steer-knob"></span>
         </div>
         <span class="steer-end">▶</span>
-        <span class="steer-hint">SWIPE / 左右滑动</span>
+        <span class="steer-hint">左右滑动转向</span>
       </div>
-      <button class="tbtn tbtn-drift" data-key="drift">DRIFT</button>
+      <button class="tbtn tbtn-drift" data-key="drift">漂移</button>
     </div>
     <div class="touch-mini">
-      <button class="tbtn tbtn-mini" data-key="auto">AUTO</button>
-      <button class="tbtn tbtn-mini" data-key="pause">II</button>
-      <button class="tbtn tbtn-mini" data-key="help">?</button>
+      <button class="tbtn tbtn-mini" data-key="auto">巡航</button>
+      <button class="tbtn tbtn-mini" data-key="pause">暂停</button>
+      <button class="tbtn tbtn-mini" data-key="help">帮助</button>
     </div>
     <div class="touch-right">
-      <button class="tbtn tbtn-brake" data-key="brake">BRAKE</button>
-      <button class="tbtn tbtn-nitro" data-key="nitro">N<sub>2</sub>O</button>
-      <button class="tbtn tbtn-gas" data-key="gas">GAS</button>
+      <button class="tbtn tbtn-brake" data-key="brake">刹车</button>
+      <button class="tbtn tbtn-nitro" data-key="nitro">氮气</button>
+      <button class="tbtn tbtn-gas" data-key="gas">油门</button>
     </div>
   </div>
 
-  <!-- ===================== START ENGINE ===================== -->
+  <!-- ===================== 启动引擎 ===================== -->
   <div id="overlay-start" class="panel-screen">
     <div class="start-inner">
-      <div class="start-kicker">A SYNTHWAVE DRIVING EXPERIENCE · 1986</div>
-      <h1 class="big-title"><span class="t1">NEON</span><span class="t2">DRIFT</span></h1>
-      <div class="start-sub">OUTRUN THE SUNSET · ENDLESS HIGHWAY</div>
+      <div class="start-kicker">合成器浪潮驾驶体验 · 1986</div>
+      <h1 class="big-title"><span class="t1">霓虹</span><span class="t2">漂移</span></h1>
+      <div class="start-sub">追逐落日 · 无尽公路</div>
       <div class="start-rule"></div>
       <p class="start-desc">漂移积攒氮气 · 超车连击加分 · 拾取音符补给 · 一圈即是一次日落到深夜</p>
-      <button id="btn-start" class="neon-btn">▶ &nbsp; START ENGINE</button>
+      <button id="btn-start" class="neon-btn">▶ &nbsp; 启动引擎</button>
       <div class="start-note">点击后才会启动音频（浏览器自动播放策略）</div>
-      <div class="start-foot">W / ↑ 油门 &nbsp; A D 转向 &nbsp; SHIFT 漂移 &nbsp; SPACE 氮气 &nbsp; ? 查看全部操作</div>
+      <div class="start-foot">W / ↑ 油门 &nbsp; A D 转向 &nbsp; Shift 漂移 &nbsp; 空格 氮气 &nbsp; ? 查看全部操作</div>
     </div>
   </div>
 
-  <!-- ===================== PAUSE ===================== -->
+  <!-- ===================== 暂停 ===================== -->
   <div id="overlay-pause" class="panel-screen hidden">
     <div class="panel-card">
-      <div class="panel-kicker">SYSTEM HALTED</div>
-      <h2 class="panel-title">PAUSED</h2>
+      <div class="panel-kicker">系统已暂停</div>
+      <h2 class="panel-title">暂停中</h2>
       <p class="panel-p">引擎已空转。按 P 或点击继续。</p>
       <div class="panel-btns">
-        <button id="btn-resume" class="neon-btn">▶ RESUME</button>
-        <button id="btn-restart-p" class="neon-btn ghost">↻ RESTART</button>
+        <button id="btn-resume" class="neon-btn">▶ 继续</button>
+        <button id="btn-restart-p" class="neon-btn ghost">↻ 重开</button>
       </div>
     </div>
   </div>
 
-  <!-- ===================== HELP ===================== -->
+  <!-- ===================== 帮助 ===================== -->
   <div id="overlay-help" class="panel-screen hidden">
     <div class="panel-card help-card">
-      <div class="panel-kicker">OPERATOR MANUAL / 操作说明</div>
-      <h2 class="panel-title">HOW TO DRIVE</h2>
+      <div class="panel-kicker">操作手册</div>
+      <h2 class="panel-title">驾驶指南</h2>
       <div class="help-cols">
         <div>
-          <h3>键盘 / KEYBOARD</h3>
+          <h3>键盘操作</h3>
           <div class="help-row"><b>W / ↑</b><span>油门加速</span></div>
           <div class="help-row"><b>S / ↓</b><span>刹车减速</span></div>
           <div class="help-row"><b>A / D · ← →</b><span>左右转向</span></div>
-          <div class="help-row"><b>SHIFT</b><span>漂移（积攒氮气）</span></div>
-          <div class="help-row"><b>SPACE</b><span>氮气爆发</span></div>
+          <div class="help-row"><b>Shift</b><span>漂移（积攒氮气）</span></div>
+          <div class="help-row"><b>空格</b><span>氮气爆发</span></div>
           <div class="help-row"><b>C</b><span>自动巡航开关</span></div>
           <div class="help-row"><b>P</b><span>暂停 / 继续</span></div>
           <div class="help-row"><b>R</b><span>重新开始</span></div>
-          <div class="help-row"><b>H</b><span>隐藏 / 显示 HUD</span></div>
+          <div class="help-row"><b>H</b><span>隐藏 / 显示仪表</span></div>
           <div class="help-row"><b>?</b><span>本帮助面板</span></div>
-          <h3 style="margin-top:14px">触屏 / TOUCH</h3>
+          <h3 style="margin-top:14px">触屏操作</h3>
           <div class="help-row"><b>左右滑动</b><span>按住拖动转向，松手回正</span></div>
-          <div class="help-row"><b>DRIFT</b><span>配合滑动漂移攒氮气</span></div>
-          <div class="help-row"><b>GAS / BRAKE</b><span>油门 / 刹车</span></div>
-          <div class="help-row"><b>N<sub>2</sub>O</b><span>氮气爆发</span></div>
-          <div class="help-row"><b>AUTO / II / ?</b><span>巡航 / 暂停 / 帮助</span></div>
+          <div class="help-row"><b>漂移</b><span>配合滑动漂移攒氮气</span></div>
+          <div class="help-row"><b>油门 / 刹车</b><span>加速 / 减速</span></div>
+          <div class="help-row"><b>氮气</b><span>氮气爆发</span></div>
+          <div class="help-row"><b>巡航 / 暂停 / 帮助</b><span>自动巡航 / 暂停 / 帮助</span></div>
           <p class="help-p dim">滑动条上、或屏幕左半区空白处均可按住左右滑动；滑得越远，转向越大。</p>
         </div>
         <div>
-          <h3>玩法 / RACE</h3>
-          <p class="help-p">按住 <b>SHIFT</b> 并转向即可漂移，漂移越久、速度越快，<b>NITRO</b> 积攒越多；满格后按 <b>SPACE</b> 爆发冲刺。</p>
-          <p class="help-p">连续超越车流触发 <b>OVERTAKE COMBO</b>，连击倍率叠加得分；拾取发光 <b>♪ 音符</b> 补充氮气，压过 <b>加速带</b> 瞬间提速。</p>
-          <p class="help-p">穿过起终点拱门记录 <b>BEST LAP</b>。无终点、无尽模式，视野里始终有车可超；每跑完一圈，落日便完成一次由昼入夜的过渡。</p>
-          <h3>调试参数 / URL</h3>
+          <h3>玩法说明</h3>
+          <p class="help-p">按住 <b>Shift</b> 并转向即可漂移，漂移越久、速度越快，<b>氮气</b>积攒越多；满格后按 <b>空格</b> 爆发冲刺。</p>
+          <p class="help-p">连续超越车流触发 <b>超车连击</b>，连击倍率叠加得分；拾取发光 <b>♪ 音符</b> 补充氮气，压过 <b>加速带</b> 瞬间提速。</p>
+          <p class="help-p">穿过起终点拱门记录 <b>最佳圈速</b>。无终点、无尽模式，视野里始终有车可超；每跑完一圈，落日便完成一次由昼入夜的过渡。</p>
+          <h3>调试参数 / 网址参数</h3>
           <div class="help-row"><b>?auto=1</b><span>开局自动巡航</span></div>
           <div class="help-row"><b>?night=1</b><span>夜色开局</span></div>
           <div class="help-row"><b>?pos=0.35</b><span>跳转至弯道路段</span></div>
           <div class="help-p dim">可组合，例如 <b>index.html?night=1&amp;pos=0.35&amp;auto=1</b></div>
         </div>
       </div>
-      <button id="btn-help-close" class="neon-btn">CLOSE &nbsp;[ ? ]</button>
+      <button id="btn-help-close" class="neon-btn">关闭 &nbsp;[ ? ]</button>
     </div>
   </div>
 </div>

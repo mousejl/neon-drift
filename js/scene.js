@@ -150,7 +150,7 @@
     CACHE.sprites.arch = makeArch();
     CACHE.sprites.note = makeNote();
     CACHE.sprites.billboard = {};
-    var words = ['NEON', 'OUTRUN', 'SYNTHWAVE', '1986', 'DRIVE', 'MIDNIGHT', 'RETRO', 'TURBO'];
+    var words = ['霓虹', '狂飙', '合成浪潮', '一九八六', '疾驰', '午夜', '复古', '涡轮'];
     for (i = 0; i < words.length; i++) CACHE.sprites.billboard[words[i]] = makeBillboard(words[i], i);
     CACHE.billboardWords = words;
   }
@@ -209,7 +209,8 @@
     c.save(); c.shadowColor = hue; c.shadowBlur = 22;
     c.strokeStyle = hue; c.lineWidth = 4; c.strokeRect(20, 12, 300, 128);
     c.strokeStyle = 'rgba(255,255,255,.65)'; c.lineWidth = 1; c.strokeRect(28, 20, 284, 112);
-    c.fillStyle = '#ffffff'; c.font = 'bold 40px "Arial Black", Impact, sans-serif';
+    c.fillStyle = '#ffffff';
+    c.font = 'bold ' + (word.length >= 4 ? 34 : 44) + 'px "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
     c.textAlign = 'center'; c.textBaseline = 'middle';
     c.fillText(word, 170, 76);
     c.restore();
@@ -231,9 +232,10 @@
     c.fillStyle = '#0d0428'; c.fillRect(20, 26, 860, 86);
     c.save(); c.shadowColor = '#28e7ff'; c.shadowBlur = 26;
     c.strokeStyle = '#28e7ff'; c.lineWidth = 5; c.strokeRect(20, 26, 860, 86);
-    c.fillStyle = '#ffffff'; c.font = 'italic bold 54px "Arial Black", Impact, sans-serif';
+    c.fillStyle = '#ffffff';
+    c.font = 'bold 56px "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
     c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText('NEON DRIFT', 450, 70);
+    c.fillText('霓虹漂移', 450, 70);
     c.restore();
     // 霓虹斜纹
     c.save(); c.beginPath(); c.rect(20, 26, 860, 86); c.clip();
@@ -318,8 +320,9 @@
 
     // 保险杠 / 车牌
     c.fillStyle = '#0b0322'; c.fillRect(W * .22, H * .84, W * .56, H * .10);
-    c.fillStyle = '#ffd166'; c.font = 'bold ' + Math.max(8, H * .09) + 'px "Courier New",monospace';
-    c.textAlign = 'center'; c.fillText(opts.player ? '86' : 'SY', W / 2, H * .915);
+    c.fillStyle = '#ffd166';
+    c.font = 'bold ' + Math.max(8, H * .09) + 'px "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",monospace';
+    c.textAlign = 'center'; c.fillText(opts.player ? '86' : '夜', W / 2, H * .915);
 
     // 排气火焰
     if (opts.boost) {
